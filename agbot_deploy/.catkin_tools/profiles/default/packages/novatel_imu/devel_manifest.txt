@@ -1,4 +1,0 @@
-gps/src/novatel_imu
-/home/agbot/agbot_deploy/devel/.private/novatel_imu/lib/pkgconfig/novatel_imu.pc /home/agbot/agbot_deploy/devel/lib/pkgconfig/novatel_imu.pc
-/home/agbot/agbot_deploy/devel/.private/novatel_imu/share/novatel_imu/cmake/novatel_imuConfig.cmake /home/agbot/agbot_deploy/devel/share/novatel_imu/cmake/novatel_imuConfig.cmake
-/home/agbot/agbot_deploy/devel/.private/novatel_imu/share/novatel_imu/cmake/novatel_imuConfig-version.cmake /home/agbot/agbot_deploy/devel/share/novatel_imu/cmake/novatel_imuConfig-version.cmake

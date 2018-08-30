@@ -1,4 +1,0 @@
-speed_pid
-/home/agbot/agbot_deploy/devel/.private/speed_pid/lib/pkgconfig/speed_pid.pc /home/agbot/agbot_deploy/devel/lib/pkgconfig/speed_pid.pc
-/home/agbot/agbot_deploy/devel/.private/speed_pid/share/speed_pid/cmake/speed_pidConfig-version.cmake /home/agbot/agbot_deploy/devel/share/speed_pid/cmake/speed_pidConfig-version.cmake
-/home/agbot/agbot_deploy/devel/.private/speed_pid/share/speed_pid/cmake/speed_pidConfig.cmake /home/agbot/agbot_deploy/devel/share/speed_pid/cmake/speed_pidConfig.cmake

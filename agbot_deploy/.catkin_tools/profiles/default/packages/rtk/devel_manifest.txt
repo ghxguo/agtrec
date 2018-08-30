@@ -1,4 +1,0 @@
-gps/src/rtk
-/home/agbot/agbot_deploy/devel/.private/rtk/lib/pkgconfig/rtk.pc /home/agbot/agbot_deploy/devel/lib/pkgconfig/rtk.pc
-/home/agbot/agbot_deploy/devel/.private/rtk/share/rtk/cmake/rtkConfig-version.cmake /home/agbot/agbot_deploy/devel/share/rtk/cmake/rtkConfig-version.cmake
-/home/agbot/agbot_deploy/devel/.private/rtk/share/rtk/cmake/rtkConfig.cmake /home/agbot/agbot_deploy/devel/share/rtk/cmake/rtkConfig.cmake
