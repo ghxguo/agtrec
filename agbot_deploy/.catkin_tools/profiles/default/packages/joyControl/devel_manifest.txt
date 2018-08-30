@@ -1,0 +1,4 @@
+joyControl
+/home/agbot/agbot_deploy/devel/.private/joyControl/lib/pkgconfig/joyControl.pc /home/agbot/agbot_deploy/devel/lib/pkgconfig/joyControl.pc
+/home/agbot/agbot_deploy/devel/.private/joyControl/share/joyControl/cmake/joyControlConfig.cmake /home/agbot/agbot_deploy/devel/share/joyControl/cmake/joyControlConfig.cmake
+/home/agbot/agbot_deploy/devel/.private/joyControl/share/joyControl/cmake/joyControlConfig-version.cmake /home/agbot/agbot_deploy/devel/share/joyControl/cmake/joyControlConfig-version.cmake

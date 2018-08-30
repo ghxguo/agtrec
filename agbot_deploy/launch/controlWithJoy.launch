@@ -1,0 +1,16 @@
+<launch>
+
+  <node pkg="joy" type="joy_node" name="joy" />
+  <node pkg="joyControl" type="joyTranslate.py" name="translate" />
+  <node pkg="speed_pid" type="speed_control.py" name="speed_control"/>
+  <node pkg="TCP_command" type="TCPTest.py" name="TPCtoArduino"/>
+  <param name="pidBypass" value="True"/>
+  <node pkg="rosserial_python" type="serial_node.py" name="serial_node">
+    <param name="port" value="/dev/ttyUSB3"/>
+    <param name="baud" value="9600"/>
+  </node>
+
+
+  <!-- <node pkg="tcp_to_arduino_example" type="send_data_to_arduino_service.py" name="setupPedalTCP" /> -->
+  <!-- <node pkg="tcp_to_arduino_example" type="send_data_to_arduino_service_sample_client.py" name="dxlControlTCP" /> -->
+</launch>
