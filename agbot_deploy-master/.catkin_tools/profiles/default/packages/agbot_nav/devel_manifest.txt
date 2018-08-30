@@ -1,0 +1,4 @@
+agbot_nav
+/home/agbot/agbot_deploy/devel/.private/agbot_nav/lib/pkgconfig/agbot_nav.pc /home/agbot/agbot_deploy/devel/lib/pkgconfig/agbot_nav.pc
+/home/agbot/agbot_deploy/devel/.private/agbot_nav/share/agbot_nav/cmake/agbot_navConfig.cmake /home/agbot/agbot_deploy/devel/share/agbot_nav/cmake/agbot_navConfig.cmake
+/home/agbot/agbot_deploy/devel/.private/agbot_nav/share/agbot_nav/cmake/agbot_navConfig-version.cmake /home/agbot/agbot_deploy/devel/share/agbot_nav/cmake/agbot_navConfig-version.cmake

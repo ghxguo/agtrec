@@ -1,0 +1,9 @@
+<launch>
+  <node name="pure_pursuite" pkg="agbot_nav" type="new_ppcontroller.py"/>
+  <param name="file_name" value="dummy_wp.txt"/>
+  <node pkg="speed_pid" type="speed_control.py" name="speed_control"/>
+  <node pkg="TCP_command" type="TCPTest.py" name="TPCtoArduino"/>
+  <param name="pidBypass" value="True"/>
+
+
+</launch>
