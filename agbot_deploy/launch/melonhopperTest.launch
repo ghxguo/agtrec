@@ -1,0 +1,25 @@
+<launch>
+  <node name="pure_pursuite" pkg="agbot_nav" type="new_ppcontroller.py"/>
+  <param name="file_name" value="waypoints_5_7_1.txt"/>
+  <node pkg="base_level_control" type="base_level_control.py" name="base_level_control"/>
+  <node pkg="TCP_command" type="TCPTest.py" name="TPCtoArduino"/>
+  <node pkg="rear_view" type="rear_view.py" name="rear_cam"/>
+  <param name="pidBypass_0_or_1" value="1"/>
+  <node pkg="melonCV" type="real_time_object_detection.py" name="watermelon_Detector"/>
+  <param name="melonBypass_0_or_1" value="1"/>
+  <param name="maxPixel" value = "400"/>
+  <param name="Kp_melon" value = "0.5"/>
+  <param name="PP_restart" value = "False"/>
+  <param name="StartWaypointNav" value = "0"/>
+  <param name="bypassPedalPosMax" value = "0.5"/>
+  <param name="bypassPedalPosMin" value = "0.35"/>
+  <param name="byPassBandWidth" value = "0.1"/>
+  <param name="Vehicle_speed_in_m_s" value = "1.5" />
+  <param name="speed_Kp" value = "0.2" />
+  <param name="speed_Ki" value = "0.1" />
+  <param name="speed_Kd" value = "1" />
+  <param name="speed_Ki_upperLimit" value = "100" />
+  <param name="speed_Ki_lowerLimit" value = "-100" />
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
+  </include>
+</launch>

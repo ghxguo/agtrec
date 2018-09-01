@@ -2,7 +2,7 @@
 
   <node pkg="joy" type="joy_node" name="joy" />
   <node pkg="joyControl" type="joyTranslate.py" name="translate" />
-  <node pkg="speed_pid" type="speed_control.py" name="speed_control"/>
+  <node pkg="base_level_control" type="base_level_control.py" name="base_level_control"/>
   <node pkg="TCP_command" type="TCPTest.py" name="TPCtoArduino"/>
   <param name="pidBypass" value="True"/>
   <node pkg="rosserial_python" type="serial_node.py" name="serial_node">

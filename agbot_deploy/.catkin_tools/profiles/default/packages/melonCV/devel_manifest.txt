@@ -1,0 +1,4 @@
+melonCV
+/home/agbot/agbot_deploy/devel/.private/melonCV/lib/pkgconfig/melonCV.pc /home/agbot/agbot_deploy/devel/lib/pkgconfig/melonCV.pc
+/home/agbot/agbot_deploy/devel/.private/melonCV/share/melonCV/cmake/melonCVConfig.cmake /home/agbot/agbot_deploy/devel/share/melonCV/cmake/melonCVConfig.cmake
+/home/agbot/agbot_deploy/devel/.private/melonCV/share/melonCV/cmake/melonCVConfig-version.cmake /home/agbot/agbot_deploy/devel/share/melonCV/cmake/melonCVConfig-version.cmake

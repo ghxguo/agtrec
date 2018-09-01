@@ -1,0 +1,4 @@
+rear_view
+/home/agbot/agbot_deploy/devel/.private/rear_view/lib/pkgconfig/rear_view.pc /home/agbot/agbot_deploy/devel/lib/pkgconfig/rear_view.pc
+/home/agbot/agbot_deploy/devel/.private/rear_view/share/rear_view/cmake/rear_viewConfig-version.cmake /home/agbot/agbot_deploy/devel/share/rear_view/cmake/rear_viewConfig-version.cmake
+/home/agbot/agbot_deploy/devel/.private/rear_view/share/rear_view/cmake/rear_viewConfig.cmake /home/agbot/agbot_deploy/devel/share/rear_view/cmake/rear_viewConfig.cmake

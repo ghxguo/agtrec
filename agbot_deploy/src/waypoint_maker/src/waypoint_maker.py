@@ -25,7 +25,7 @@ i = 0
 #while os.path.exists("/home/agbot/agbot_deploy/src/agbot_nav/src/waypoints_%s.txt" % i):
  #   i += 1
   #  print(i)
-waypoint_file =  open("waypoints_5_7_1.txt","w")
+waypoint_file =  open("waypoints_final_2.txt","w")
 #waypoint_file =  open(os.path.join("/home/agbot/agbot_deploy/src/agbot_nav/src/agbot_nav/src/","waypoints_%s.txt" % i),"w")
 
 def pose_callback(data):
@@ -61,7 +61,7 @@ def waypoint_maker():
 
         euclideanDistance = math.sqrt((math.pow((current_x-previous_x),2) + math.pow((current_y-previous_y),2)))
 
-        if euclideanDistance > 1:
+        if euclideanDistance > 0.5:
             print("distance = ", euclideanDistance)
 
             waypoint_file.write(str(current_x)+","+str(current_y)+"\r\n")
