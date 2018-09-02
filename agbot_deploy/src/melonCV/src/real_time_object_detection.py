@@ -19,15 +19,18 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 import rospkg
 import os
-maxPixel = rospy.get_param("/maxPixel")
-vs = VideoStream(src=1).start()
+#maxPixel = rospy.get_param("/maxPixel")
+maxPixel = 300
+vs = VideoStream(src=0).start()
 objectDetected = False
 
 
 def CVControl():
 	rspkg = rospkg.RosPack()
- 	prototxt_path = os.path.join(rspkg.get_path('melonCV'),"src","MNSSD_melon_1200000.prototxt")
- 	caffemodel_path = os.path.join(rspkg.get_path('melonCV'),"src","MNSSD_melon_1200000.caffemodel")
+ 	#prototxt_path = os.path.join(rspkg.get_path('melonCV'),"src","MNSSD_melon_1200000.prototxt")
+ 	#caffemodel_path = os.path.join(rspkg.get_path('melonCV'),"src","MNSSD_melon_1200000.caffemodel")
+	prototxt_path = "~/agtrec/agbot_deploy/src/melonCV/src/NSSD_melon_1200000.prototxt"
+	caffemodel_path = "~/agtrec/agbot_deploy/src/melonCV/src/MNSSD_melon_1200000.caffemodel"
 	init_confidence = 0.2
 	# initialize the list of class labels MobileNet SSD was trained to
 	# detect, then generate a set of bounding box colors for each class

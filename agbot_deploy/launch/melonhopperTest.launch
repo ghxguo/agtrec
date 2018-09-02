@@ -20,6 +20,6 @@
   <param name="speed_Kd" value = "1" />
   <param name="speed_Ki_upperLimit" value = "100" />
   <param name="speed_Ki_lowerLimit" value = "-100" />
-  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >
-  </include>
+  <!--<include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" >-->
+  <!--</include>-->
 </launch>
