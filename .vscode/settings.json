@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "deque": "cpp",
+        "initializer_list": "cpp",
+        "queue": "cpp",
+        "type_traits": "cpp",
+        "vector": "cpp",
+        "xstring": "cpp",
+        "xtree": "cpp",
+        "xutility": "cpp",
+        "dense": "cpp",
+        "iosfwd": "cpp",
+        "xlocale": "cpp"
+    }
+}

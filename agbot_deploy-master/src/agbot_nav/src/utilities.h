@@ -5,11 +5,13 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <Eigen/Dense>
 
 using std::vector;
 using std::ifstream;
 using std::string;
-uisng std::stod;
+using std::stod;
+using Eigen::MatrixXd;
 
 
 
@@ -20,7 +22,7 @@ struct Point
     int y;
     int inputHeading;
     Point(int xIn, int yIn, int headingIn): x(xIn), y(yIn), inputHeading(headingIn) { }
-    Point(int xIn, int yIn, int headingIn): x(xIn), y(yIn) { }
+    Point(int xIn, int yIn): x(xIn), y(yIn) { }
 
 };
 
@@ -45,7 +47,7 @@ private:
     //List of normal vectors to segments joining the waypoints:
     vector<int> tgtHeading;
     //List of normal vectors to segments joining the waypoints:
-    vector<int> segNormVecList;
+    vector<Point> segNormVecList;
     //Number of waypoints:
     size_t nPts;
     //Tuning gains:

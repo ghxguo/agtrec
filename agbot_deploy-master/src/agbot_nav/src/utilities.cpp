@@ -24,27 +24,22 @@ void PPController::initialize(string filename)
     std::getline(in, py, ',');
     while(!in.fail())
     {
-        wpList.push_back(Point(stod(px), stod(py));
+        wpList.push_back(Point(stod(px), stod(py) ) );
         std::getline(in, px, ',');
         std::getline(in, py, ',');
     }
     nPts = wpList.size();
-      self.nPts = len(self.wpList)
-        self.segNormVecList = np.zeros((2,self.nPts))
+    segNormVecList.reserve(nPts);
+    tgtHeading.push_back(0);
+        // self.segNormVecList = np.zeros((2,self.nPts))
 
-        self.tgtHeading.append(0)
-
-        #
-        #
-        #     spLine = wp.split( ',')
-        #
-        #     self.wpList.append(Point(float(spLine[0]) , float(spLine[1])))
-        #
-        # self.nPts = len(self.wpList)
-        # self.segNormVecList = np.zeros((2,self.nPts))
-        #
-        # self.tgtHeading.append(0)
-
+        // self.tgtHeading.append(0)
+    
+    for(size_t i = 0; i < wpList.size(); i++)
+    {
+        tgtHeading.push_back()
+    }
+    
 
         # Loop to compute the target heading values:
         for idx in range(0, len(self.wpList)-1):
