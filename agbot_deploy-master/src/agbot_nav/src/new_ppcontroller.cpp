@@ -1,5 +1,5 @@
 #include "utilities.h"
-//#include "ros/ros.h" this needs to be included for publisher/subscriber to work
+#include "ros/ros.h" //this needs to be included for publisher/subscriber to work
 
 
 //define global variables
