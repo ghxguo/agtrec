@@ -51,7 +51,7 @@ private:
 	
     vector<Point> wpList;
     //Current target waypoint index:
-    int currWpIdx;
+    size_t currWpIdx;
 
     //List of desired heading values:
     vector<double> tgtHeading;
@@ -87,7 +87,11 @@ public:
 
     //return the unit vector of the vector
     static Vector2d unit_vector(Vector2d vector);
-
+    //getters
+    size_t getcurrWpIdx();
+    size_t getnPts();
+    vector<Point> getwpList();
+    void incrimentWpIdx();
     ~PPController();
 };
 

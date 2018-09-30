@@ -1,6 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
-#include "utilities.h"
+#include "PPController.h"
 
 PPController::PPController(double inputLeadDistance, double inputLength, double inputMinTurningRadius, double inputMaximumVelocity)
 {
@@ -140,6 +140,23 @@ double PPController::compute_forward_velocity()
 static Vector2d unit_vector(Vector2d vector)
 {
 	return vector.normalized();
+}
+
+size_t PPController::getcurrWpIdx()
+{
+    return this->currWpIdx;
+}
+void PPController::incrimentWpIdx()
+{
+    currWpIdx++;
+}
+size_t PPController::getnPts()
+{
+    return this->wpList.size();
+}
+vector<Point> PPController::getwpList()
+{
+    return this->wpList;
 }
 
 PPController::~PPController()
