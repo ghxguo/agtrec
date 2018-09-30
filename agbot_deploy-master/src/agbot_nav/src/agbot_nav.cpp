@@ -51,34 +51,18 @@ void execute(int argc, char **agrv,PPController cntrl)
 {
 //setup ros publishers and subscribers
     
-	double distance2Goal = 100000000;
+	double distance2Goal = 0.1;
 
 	//initialize ppcontroller node
 	ros::init(argc,agrv,"ppcontroller");
-	
-	//initialize publisher topics for testing
-	// ros::init(argc,agrv,"steering_cmd");
-	// ros::init(argc,agrv,"speed_setpoint");
-	// ros::init(argc,agrv,"/current_goalpoint");
-	
-	//initialize subscriber topics for testing
-	// ros::init(argc,agrv,"/fix");
-	// ros::init(argc,agrv,"/novatel_imu");
+
 	ros::NodeHandle nh; 
 	auto fix = nh.subscribe("/fix", 500, pose_callback);
 	auto imu = nh.subscribe("/novatel_imu", 500, heading_callback);
 	//initialize publishers
-	ros::Publisher pub_steering = nh.advertise<std_msgs::Float32>("steering_cmd",10);
-	ros::Publisher pub_padel = nh.advertise<std_msgs::Float32>("speed_setpoint",10);
-	ros::Publisher pub_goal = nh.advertise<geometry_msgs::Point32>("/current_goalpoint",10);
-	
-	//initialize test publishers for subscribers
-	// ros::Publisher pub_heading = nh.advertise<geometry_msgs::Point32>("/novatel_imu",10);
-	// ros::Publisher pub_pos = nh.advertise<sensor_msgs::NavSatFix>("/fix",10);
-	
-	ros::Rate loop_rate(10);
-
-	//ros::Subscriber sub_heading = nh.subscribe("/novatel_imu",10,heading_callback);
+	ros::Publisher pub_steering = nh.advertise<std_msgs::Float32>("steering_cmd",500);
+	ros::Publisher pub_padel = nh.advertise<std_msgs::Float32>("speed_setpoint",500);
+	ros::Publisher pub_goal = nh.advertise<geometry_msgs::Point32>("current_goalpoint",500);
 	
 	//initialize
 	//1. Parameters (these are used for testing if the error is reducing properly)
@@ -100,76 +84,53 @@ void execute(int argc, char **agrv,PPController cntrl)
 
 	stationaryCommand.x=0;
 	stationaryCommand.y=0;
-
+	cout<< "Done Init, begin loop\n";
 	//stops when ros is shutdown
+	ros::Rate loop_rate(10);
 	while(ros::ok())
 	{
-		
 		//compute the new Euclidean Error
-		//geometry_msgs::Point32 current_goalPoint = geometry_msgs::Point32(goalPoint.x,goalPoint.y,0);
 		current_goalPoint.x=goalPoint.x;
 		current_goalPoint.y=goalPoint.y;
 
-		cout <<"\nCurrent Index: "<< cntrl.getcurrWpIdx();
-
+		cout <<"Current Index: "<< cntrl.getcurrWpIdx() << endl;
 		pub_goal.publish(current_goalPoint);
-
+		ROS_INFO("x: %f\ty: %f\t", current_goalPoint.x, current_goalPoint.y);
 		//Vehicule is in vicinity of goal point
 		if(distance2Goal < 0.2)
 		{
 			//Update goal Point to next point in the waypoint list:
 			cntrl.incrimentWpIdx();
-			cout<< "/n Reached Waypoint # " <<cntrl.getcurrWpIdx();
+			cout<< "Reached Waypoint # " <<cntrl.getcurrWpIdx() << endl;
 			
 			//checks to see if there are any more waypoints before updating goalpoint
 			if (cntrl.getcurrWpIdx() < cntrl.getnPts()){
                 goalPoint = cntrl.getwpList()[cntrl.getcurrWpIdx()];
 			}
 			else{
-				cout<<"\n --- All Waypoints have been conquered! Mission Accomplished Mr Hunt !!! --- ";
+				cout<<"\n --- All Waypoints have been conquered! Mission Accomplished Mr Hunt !!! --- " << endl;
 				break;
 			}
 			
-			cout<<"\nNew Goal is:\n"<<goalPoint.x<<goalPoint.y;
+			cout<<"\nNew Goal is:\n"<<goalPoint.x<<goalPoint.y<<endl;
 			
 			cntrl.compute_steering_vel_cmds(currentPosition, velDouble, deltaDouble, distance2Goal);
-			
+			//Delete THIS!!
+			distance2Goal = 0.1;
+			//DELETE THIS!!
 			delta.data=-deltaDouble;
 			vel.data=velDouble;
 			
 			pub_steering.publish(delta);
         	pub_padel.publish(vel);
-
-			loop_rate.sleep();
+			ROS_INFO("delta: %f", delta);
+			ROS_INFO("vel: %f", vel);
 		}
-		ros::spin();
+		ros::spinOnce();
+		loop_rate.sleep();			
+
 	}
 }
-
-/*testing junk
-	geometry_msgs::Point32 testPoint;
-	testPoint.x=0;
-	testPoint.y=0;
-	testPoint.z=1.324;
-
-	//cout<<"Before loop good!";
-
-	while(ros::ok()){
-		std_msgs:: Float32 msg;
-		//geometry_msgs:: Point32 msgP;
-		float x=1.1;
-		msg.data= x;
-		//msgP.data=testPoint;
-		pub_steering.publish(msg);
-		//msg.data= 1.2;
-		pub_heading.publish(testPoint);
-		//msg.data= 1.3;
-		pub_steering.publish(msg);
-		ros::spinOnce();//used to trigger callback functions
-		loop_rate.sleep();
-	}
-    */
-
 
 
 int main(int argc, char **agrv)

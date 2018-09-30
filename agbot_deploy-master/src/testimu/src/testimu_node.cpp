@@ -8,7 +8,7 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "testimu_node");
   ros::NodeHandle n;
-  ros::Publisher chatter_pub = n.advertise<Point32>("novatel_imu", 1000);
+  ros::Publisher chatter_pub = n.advertise<Point32>("novatel_imu", 10);
   ros::Rate loop_rate(10);
   std::random_device r;
  

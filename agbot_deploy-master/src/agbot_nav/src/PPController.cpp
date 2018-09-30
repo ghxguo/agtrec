@@ -105,19 +105,18 @@ void PPController::compute_steering_vel_cmds(Point current, double &vel, double 
         else if(heading_err < -M_PI)
         heading_err = heading_err + 2 * M_PI;
         delta = this->k_delta*(heading_err);
-
         cout << "Target heading = " << this->tgtHeading[this->currWpIdx] << "\n";
 
         //Compute forward velocity:
         vel = this->maximumVelocity - abs(this->k_vel * delta);
 
+        
         if (vel < this->minVelocity)
             vel = this->minVelocity;
         if (delta > 1)
             delta = 1;
         if (delta < -1)
             delta = -1;
-
 }
 // compute the steering angle of ackermann vehicle of given paramters
 double PPController::compute_steering_angle()

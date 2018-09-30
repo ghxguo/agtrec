@@ -8,7 +8,7 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "testfix_node");
   ros::NodeHandle n;
-  ros::Publisher chatter_pub = n.advertise<sensor_msgs::NavSatFix>("fix", 1000);
+  ros::Publisher chatter_pub = n.advertise<sensor_msgs::NavSatFix>("fix", 10);
   ros::Rate loop_rate(10);
   std::random_device r;
  
