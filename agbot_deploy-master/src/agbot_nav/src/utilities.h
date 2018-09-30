@@ -16,6 +16,7 @@ using Eigen::MatrixXd;
 using Eigen::Vector2d;
 using Eigen::VectorXd;
 using Eigen::Matrix3Xd;
+using Eigen::Matrix2Xd;
 //struct to define vehicle position on a coordinate system at a certain heading
 struct Point
 {
@@ -25,7 +26,10 @@ struct Point
     Point() : x(0), y(0), inputHeading(0) {}
     Point(double xIn, double yIn, double headingIn): x(xIn), y(yIn), inputHeading(headingIn) { }
     Point(double xIn, double yIn): x(xIn), y(yIn) { }
-
+	Vector2d toVector2D()
+	{
+		return Vector2d(x, y);
+	}
 };
 
 //class to define vehicle parameters
@@ -53,7 +57,7 @@ private:
     vector<double> tgtHeading;
 	//Matrix3Xd tgtHeading;
 	//List of normal vectors to segments joining the waypoints:
-    vector<Point> segNormVecList;
+    Matrix2Xd segNormVecList;
     //Number of waypoints:
     size_t nPts;
     //Tuning gains:
@@ -66,7 +70,7 @@ private:
     double minVelocity;
 public:
     PPController(double inputLeadDistance, double inputLength = 2.065, double inputMinTurningRadius = 4.6, double inputMaximumVelocity = 0.5);
-    void initialize(string filename);
+    bool initialize(string filename);
     
     //Function to compute steering angle and forward velocity commands:
     //References are all return values  
@@ -82,7 +86,7 @@ public:
     double compute_forward_velocity(); //added a variable velocity based on Bijo's suggestion
 
     //return the unit vector of the vector
-    static VectorXd unit_vector(VectorXd vector);
+    static Vector2d unit_vector(Vector2d vector);
 
     ~PPController();
 };

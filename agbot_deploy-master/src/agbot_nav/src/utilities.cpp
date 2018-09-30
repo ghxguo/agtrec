@@ -16,68 +16,68 @@ PPController::PPController(double inputLeadDistance, double inputLength, double 
     nPts = 0;
 }
 
-void PPController::initialize(string filename)
+bool PPController::initialize(string filename)
 {
-    wpList.reserve(30);
+    wpList.reserve(100);
     ifstream in(filename);
+	if (in.fail())
+	{
+		cout << "Wrong FileName!!\n";
+		return false;
+	}
     string px;
     string py;
     std::getline(in, px, ',');
-    std::getline(in, py, ',');
+    std::getline(in, py, '\n');
     while(!in.fail())
     {
         wpList.push_back(Point(stod(px), stod(py) ) );
         std::getline(in, px, ',');
-        std::getline(in, py, ',');
+        std::getline(in, py, '\n');
     }
-    nPts = wpList.size();
-    segNormVecList.reserve(nPts);
+	segNormVecList = Matrix2Xd(2, wpList.size() + 1);
+	segNormVecList.col(0) << Vector2d(0, 0);
     //tgtHeading = Matrix3Xd(250);
-    for(size_t i = 0; i < wpList.size(); i++)
+    for(size_t i = 0; i < wpList.size() - 1; i++)
     {
         tgtHeading.push_back(atan2(wpList[i+1].y - wpList[i].y, wpList[i+1].x-wpList[i].x));
-        
-         double normX = wpList[i].y - wpList[i + 1].y;
-         double normY = wpList[i + 1].x - wpList[i].x;
-
-         //Calculate the norm:
-         double nVecMag = sqrt(pow(normX, 2) + pow(normY, 2));
-
-        /* segNormVecList(0, i + 1) = normX / nVecMag;
-         segNormVecList(1, i + 1) = normY / nVecMag;*/
-         //result shoule be double
+		double normX = wpList[i].y - wpList[i + 1].y;
+		double normY = wpList[i + 1].x - wpList[i].x;
+		double nVecMag = sqrt(pow(normX, 2) + pow(normY, 2));
+		segNormVecList.col(i+1) = Vector2d(normX / nVecMag, normY / nVecMag);
     }
     tgtHeading[0] = tgtHeading[1];
-
-    for(int i = 0 ; i < segNormVecList.size() ; i++)
-    {
-        segNormVecList[i, 0] = segNormVecList[i, 1];
-    }
+	segNormVecList.col(0) = segNormVecList.col(1);
+	return true;
 }
 void PPController::compute_turning_radius(Point current, Point goal)
 {
-    
+	double beta = atan2(goal.y - current.y, goal.x - current.y);
+	double temp = current.inputHeading + M_PI;
+	temp = fmod(temp, 2 * 3.14) - 3.14;
+	double alpha = temp - beta;
+	double L_a = sqrt(pow((goal.x - current.x), 2) + pow((goal.y - current.y), 2));
+	turningRadius = L_a / (2 * sin(alpha));
 }
 
 void PPController::compute_steering_vel_cmds(Point current, double &vel, double &delta, double &distance2Goal)
 {
     // Compute vector from current position to current waypoint:
-    VectorXd vecRobot2WP = VectorXd::Zero(2,1);
-    vecRobot2WP(0,0) = this->wpList[this->currWpIdx].x-current.x;
+    Vector2d vecRobot2WP = Vector2d::Zero(2,1);
+    vecRobot2WP(0,0) = this->wpList[this->currWpIdx].x - current.x;
     vecRobot2WP(1,0) = this->wpList[this->currWpIdx].y - current.y;
-    VectorXd vecCurHeading = VectorXd::Zero(2,1);
+    Vector2d vecCurHeading = Vector2d::Zero(2,1);
     vecRobot2WP(0,0) = this->wpList[this->currWpIdx].x-current.x;
     vecRobot2WP(1,0) = this->wpList[this->currWpIdx].y - current.y;
     
     vecCurHeading(0,0) = cos(this->tgtHeading[this->currWpIdx]);
     vecCurHeading(1,0) = sin(this->tgtHeading[this->currWpIdx]);
     distance2Goal = vecRobot2WP.dot(vecCurHeading);
-    cout<<"distance2Goal" << distance2Goal;
+    cout<<"distance2Goal" << distance2Goal << "\n";
 
     //Compute the minimum distance from the current segment:
     //change this
-    double minDist = 0;
-    //double minDist = vecRobot2WP.dot(segNormVecList[:,self.currWpIdx]);
+    double minDist = vecRobot2WP.dot(segNormVecList.col(currWpIdx));
     double theta_gain = this->k_theta * minDist;
         if (theta_gain > M_PI /2)
         {
@@ -87,16 +87,16 @@ void PPController::compute_steering_vel_cmds(Point current, double &vel, double 
         {
             theta_gain = -M_PI/2;    
         }
-        cout << "minDist = " << minDist;
-        cout << "theta_gain = " << theta_gain;
+        cout << "minDist = " << minDist << "\n";
+        cout << "theta_gain = " << theta_gain << "\n";
         //Compute the desired heading angle based of target heading and the min dist:
-        auto theta_des = this->tgtHeading[this->currWpIdx] + theta_gain;
+        double theta_des = this->tgtHeading[this->currWpIdx] + theta_gain;
 
-        cout << "Theta des = " << theta_des;
+        cout << "Theta des = " << theta_des << "\n";
         //Compute the steering agle command:
 
         //change this
-        auto heading_err = theta_des - current.inputHeading;
+        double heading_err = theta_des - current.inputHeading;
 
         if(heading_err > M_PI)
         {
@@ -106,7 +106,7 @@ void PPController::compute_steering_vel_cmds(Point current, double &vel, double 
         heading_err = heading_err + 2 * M_PI;
         delta = this->k_delta*(heading_err);
 
-        cout << "Target heading = " << this->tgtHeading[this->currWpIdx];
+        cout << "Target heading = " << this->tgtHeading[this->currWpIdx] << "\n";
 
         //Compute forward velocity:
         vel = this->maximumVelocity - abs(this->k_vel * delta);
@@ -124,8 +124,7 @@ double PPController::compute_steering_angle()
 {
     // Steering angle command from Pure pursuit paper:
     // Steering angle = atan(L/R)
-    double steeringAngle = atan(length / turningRadius);
-    return steeringAngle;
+    return atan(length / turningRadius);
 
 }    
 
@@ -138,11 +137,9 @@ double PPController::compute_forward_velocity()
     return forwardVelocity;
 }
 
-static VectorXd unit_vector(VectorXd vector)
+static Vector2d unit_vector(Vector2d vector)
 {
-	//TODO
-	//THIS is a STUB!!!
-	return VectorXd();
+	return vector.normalized();
 }
 
 PPController::~PPController()

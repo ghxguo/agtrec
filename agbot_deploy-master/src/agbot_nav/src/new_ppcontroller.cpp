@@ -1,52 +1,188 @@
 #include "utilities.h"
-#include "ros/ros.h" //this needs to be included for publisher/subscriber to work
+#include "ros/ros.h" 
+#include "std_msgs/Float32.h"
+#include "geometry_msgs/Point32.h"
+#include "sensor_msgs/NavSatFix.h"
+#include "UTM.h"
+#include <iostream>
+using namespace std;
 
 
 //define global variables
 Point currentPosition;
 
 
-//various ways to initizialize file_name
+//filename selection
+const string file_name = "../waypoints_5_7_3.txt";
 
-//string file_name;
-//file_name = rospy.get_param("/file_name");
-//ros::param:get("/file_name",file_name);
-string file_name="waypoints_5_7_3.txt";
+//callback functions
 
-//Initialize function definition:
-PPController initialize(){
+void pose_callback(const sensor_msgs::NavSatFix:: ConstPtr& msg)
+{
 
-//Create objects for AckermannVehicle and Pure Pursuit controller
-AckermannVehicle mule = AckermannVehicle(2.065,4.6,2.2);
-PPController cntrl = PPController(0,mule.length,mule.minTurningRadius,mule.maximumVelocity);
+	float x = msg->latitude;
+	float y = msg->longitude;
+	float iniX = 0;
+	float iniY = 0;
 
-cntrl.initialize(file_name);
+	//iniX=DegToRad(x);
+	//iniY=DegToRad(y);
 
-return cntrl;
+	MapLatLonToXY(DegToRad(x), DegToRad(y), UTMCentralMeridian(17), iniX, iniY);
+
+	currentPosition.x = iniX;
+	currentPosition.y = iniY;
+
 }
+
+
+void heading_callback(const geometry_msgs::Point32:: ConstPtr& msg){
+
+	currentPosition.inputHeading=msg->z;
+	//cout<<currentPosition.inputHeading;
+}
+
 
 //execution function
 
-
-
-/*
 void execute(PPController cntrl){
-
+void execute(int argc, char **agrv,PPController cntrl){
 //setup ros publishers and subscribers
-    ros::NodeHandle nh; //this can't work unless we include ros/ros.h
+    
+	double distance2Goal = 100000000;
 
-    Publisher pub_steering = nh.publish('steering_cmd', Float32, queue_size =10);
+	//initialize ppcontroller topic
+	ros::init(argc,agrv,"ppcontroller");
+	
+	//initialize publisher topics for testing
+	ros::init(argc,agrv,"steering_cmd");
+	ros::init(argc,agrv,"speed_setpoint");
+	ros::init(argc,agrv,"/current_goalpoint");
+	
+	//initialize subscriber topics for testing
+	ros::init(argc,agrv,"/fix");
+	ros::init(argc,agrv,"/novatel_imu");
+	
+	//initialize publishers
+	ros::NodeHandle nh; 
+	ros::Publisher pub_steering = nh.advertise<std_msgs::Float32>("steering_cmd",10);
+	ros::Publisher pub_padel = nh.advertise<std_msgs::Float32>("speed_setpoint",10);
+	ros::Publisher pub_goal = nh.advertise<geometry_msgs::Point32>("/current_goalpoint",10);
+	
+	//initialize test publishers for subscribers
+	ros::Publisher pub_heading = nh.advertise<geometry_msgs::Point32>("/novatel_imu",10);
+	ros::Publisher pub_pos = nh.advertise<sensor_msgs::NavSatFix>("/fix",10);
+	
+	ros::Rate loop_rate(10);
+
+	//initialize subscribers
+
+	//ros::Subscriber sub_pose = nh.subscribe("/fix",10,pose_callback);
+	ros::Subscriber sub_heading = nh.subscribe("/novatel_imu",10,heading_callback);
+	
+	//initialize
+	//1. Parameters (these are used for testing if the error is reducing properly)
+	float error=0;
+	float threshold=2.5;
+	double velDouble;
+	double deltaDouble;
+	std_msgs::Float32 delta;
+	std_msgs::Float32 vel;
+
+	//2. Points
+	Point goalPoint=cntrl.wpList[cntrl.currWpIdx];//not to be confused with "current_goalpoint"
+
+	//3. Commands
+
+	geometry_msgs::Point32 command;
+	geometry_msgs::Point32 stationaryCommand;
+	geometry_msgs::Point32 current_goalPoint;
+
+	stationaryCommand.x=0;
+	stationaryCommand.y=0;
+
+	//stops when ros is shutdown
+	while(ros::ok()){
+		
+		//compute the new Euclidean Error
+		//geometry_msgs::Point32 current_goalPoint = geometry_msgs::Point32(goalPoint.x,goalPoint.y,0);
+		current_goalPoint.x=goalPoint.x;
+		current_goalPoint.y=goalPoint.y;
+
+		cout <<"\nCurrent Index: "<< cntrl.currWpIdx;
+
+		pub_goal.publish(current_goalPoint);
+
+		//Vehicule is in vicinity of goal point
+		if(distance2Goal < 0.2){
+			cout<< "/n Reached Waypoint # " <<cntrl.currWpIdx +1;
+			
+			//Update goal Point to next point in the waypoint list:
+            cntrl.currWpIdx +=1;
+
+			//checks to see if there are any more waypoints before updating goalpoint
+			if (cntrl.currWpIdx < cntrl.nPts){
+                goalPoint = cntrl.wpList[cntrl.currWpIdx];
+			}
+			else{
+				cout<<"\n --- All Waypoints have been conquered! Mission Accomplished Mr Hunt !!! --- ";
+				break;
+			}
+			
+			cout<<"\nNew Goal is:\n"<<goalPoint.x<<goalPoint.y;
+			
+			cntrl.compute_steering_vel_cmds(currentPosition, velDouble, deltaDouble, distance2Goal);
+			
+			delta.data=-deltaDouble;
+			vel.data=velDouble;
+			
+			pub_steering.publish(delta);
+        	pub_padel.publish(vel);
+
+			loop_rate.sleep();
+		}
+		ros::spin();
+	}
+
+/*testing junk
+	geometry_msgs::Point32 testPoint;
+	testPoint.x=0;
+	testPoint.y=0;
+	testPoint.z=1.324;
+
+	//cout<<"Before loop good!";
+
+	while(ros::ok()){
+		std_msgs:: Float32 msg;
+		//geometry_msgs:: Point32 msgP;
+		float x=1.1;
+		msg.data= x;
+		//msgP.data=testPoint;
+		pub_steering.publish(msg);
+		//msg.data= 1.2;
+		pub_heading.publish(testPoint);
+		//msg.data= 1.3;
+		pub_steering.publish(msg);
+		ros::spinOnce();//used to trigger callback functions
+		loop_rate.sleep();
+	}
+    
 }
 */
-int main()
+
+int main(int argc, char **agrv)
 {
-    //PPController cntrl = initialize();
-    //execute(cntrl);
-	VectorXd a(5);
-	a.setZero();
-	/*a(1, 3) = 1;
-	a(1, 2) = 2;
-	VectorXd b = a.Unit(1);
-	cout << b;*/
-    return 0;
+    //cout << "HI!";
+	AckermannVehicle mule = AckermannVehicle(2.065, 4.6, 2.2);
+	PPController cntrl = PPController(0, mule.length, mule.minTurningRadius, mule.maximumVelocity);
+
+	if (!cntrl.initialize(file_name))
+	{
+		return EXIT_FAILURE;
+	}
+    
+	
+	execute(argc,agrv,cntrl);
+
+    return EXIT_SUCCESS;
 }
